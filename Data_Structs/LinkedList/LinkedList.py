@@ -1,15 +1,23 @@
 class Node:
-    def __init__(self, data=None, next_node=None, prev_node=None):
+    def __init__(self, data=None, next_node=None):
         self.data = data
         self.next_node = next_node
-        self.prev_node = prev_node
 
     def __repr__(self):
         return str(self.data)
 
 
+class DoublyLinkedNode(Node):
+    def __init__(self, data=None, next_node=None, prev_node=None):
+        super.__init__(self, data=data, next_node=next_node)
+        self.prev_node = prev_node
+
+
 class SinglyLinkedList:
     def __init__(self, *args):
+        '''
+        Initialises the SinglyLinkedList. If any arguments are passed they will be added to the list
+        '''
         self.head = None
         self.tail = None
         self.size = 0
@@ -21,6 +29,9 @@ class SinglyLinkedList:
                 self.append(*args[1:])
 
     def __repr__(self):
+        '''
+        Traverses the list and return a simple illustration of all its items
+        '''
         current = self.head
         result = ''
         if self.size == 0:
@@ -36,10 +47,16 @@ class SinglyLinkedList:
         pass
 
     def __iter__(self):
+        '''
+        Returns itself and sets 'self.current' to 'self.head'
+        '''
         self.current = self.head
         return self
 
     def __next__(self):
+        '''
+        Returns the next node
+        '''
         if self.current:
             node = self.current
             self.current = self.current.next_node
@@ -48,9 +65,15 @@ class SinglyLinkedList:
             raise StopIteration
 
     def __len__(self):
+        '''
+        Returns the number of items the list holds
+        '''
         return self.size
 
     def __contains__(self, value):
+        '''
+        Checks if a value exists within the list
+        '''
         current = self.head
         while current:
             if current.data == value:
@@ -59,6 +82,9 @@ class SinglyLinkedList:
         return False
 
     def append(self, *args):
+        '''
+        Appends all arguments passed
+        '''
         self.size += len(args)
         for i in args:
             self.tail.next_node = Node(data=i)
@@ -67,6 +93,9 @@ class SinglyLinkedList:
         return self
 
     def prepend(self, *args):
+        '''
+        Prepends all arguments passed
+        '''
         self.size += len(args)
         for i in args[::-1]:
             current = Node(data=i)
@@ -76,6 +105,9 @@ class SinglyLinkedList:
         return self
 
     def reverse(self):
+        '''
+        Reverses itself 
+        '''
         temp = SinglyLinkedList()
         current = self.head
         while current:
@@ -86,6 +118,9 @@ class SinglyLinkedList:
         return self
 
     def clear(self):
+        '''
+        Sets the properties back to the default
+        '''
         self.head = None
         self.size = 0
         self.tail = None
@@ -93,9 +128,15 @@ class SinglyLinkedList:
         return self
 
     def copy(self):
+        '''
+        Returns a copy of this list with the class of 'SinglyLinkedList'
+        '''
         return SinglyLinkedList(*[i for i in self])
 
     def count(self, value):
+        '''
+        Traverses the list to find the amount of time a value occurs
+        '''
         count = 0
         current = self.head
         while current:
@@ -106,6 +147,9 @@ class SinglyLinkedList:
         return count
 
     def index(self, value):
+        '''
+        Returns the index of the first matching value
+        '''
         index = 0
         current = self.head
         if value not in self:
@@ -118,6 +162,9 @@ class SinglyLinkedList:
             current = current.next_node
 
     def pop(self):
+        '''
+        Removes and returns the last item
+        '''
         node = self.tail
         current = self.head
         if self.head is self.tail:
@@ -132,12 +179,18 @@ class SinglyLinkedList:
             current = current.next_node
 
     def extend(self, obj):
+        '''
+        Adds all items of another SinglyLinkedList to this one
+        '''
         if not isinstance(obj, SinglyLinkedList):
             raise TypeError('Object is not SinglyLinkedList')
         else:
             self.append(*[i for i in obj])
 
-    def insert(self, index, data):
+    def insert(self, index, *args):
+        '''
+        Inserts all arguments starting at the index given.
+        '''
         current = self.head
         current_index = 0
         if index > self.size - 1:
@@ -145,8 +198,10 @@ class SinglyLinkedList:
         while current:
             if current_index + 1 == index:
                 temp = current.next_node
-                current.next_node = Node(data=data)
-                current.next_node.next_node = temp
+                for i in args:
+                    current.next_node = Node(data=i)
+                    current = current.next_node
+                current.next_node = temp
                 break
             current = current.next_node
             current_index += 1
@@ -166,4 +221,5 @@ if __name__ == '__main__':
     # print(ll)
     # print(ll.pop())
     # print(ll)
-    print(ll.insert(3, 't'))
+    print(ll)
+    print(ll.insert(3, *['w', 0, None, [1, 2, 3], 12.1]))
